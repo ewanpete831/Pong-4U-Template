@@ -1,7 +1,7 @@
 ﻿/*
  * Description:     A basic PONG simulator
- * Author:           
- * Date:            
+ * Author: Ewan Peterson          
+ * Date: February 7 2022
  */
 
 #region libraries
@@ -27,7 +27,7 @@ namespace Pong
 
         //graphics objects for drawing
         SolidBrush drawBrush = new SolidBrush(Color.White);
-        Font drawFont = new Font("Comic Sans", 25);
+        Font drawFont = new Font("Comic Sans MS", 25);
 
         // Sounds for game
         SoundPlayer scoreSound = new SoundPlayer(Properties.Resources.score);
@@ -39,23 +39,19 @@ namespace Pong
         // check to see if a new game can be started
         Boolean newGameOk = true;
 
-
         //ball directions, speed, and rectangle
         Boolean ballMoveRight = true;
         Boolean ballMoveDown = false;
         int BALL_SPEED = 4;
         int BallSpeedCount = 0;
-        int ballX, ballY, ballSize;
 
         //paddle speeds and rectangles
         const int PADDLE_SPEED = 4;
-        int p1X, p1Y, p2X, p2Y, pHeight, pWidth;
+        int pHeight, pWidth;
 
         Rectangle p1 = new Rectangle(20, 195, 10, 60);
         Rectangle p2 = new Rectangle(586, 195, 10, 60);
         Rectangle ball = new Rectangle(295, 195, 10, 10);
-
-
 
         //player and game scores
         int player1Score = 0;
@@ -148,7 +144,7 @@ namespace Pong
             p1.Y = this.Height / 2 - pHeight / 2;
 
             //p2 starting position
-            p2.X = this.Width - PADDLE_EDGE - p2.Width;
+            p2.X = this.Width - PADDLE_EDGE - pWidth;
             p2.Y = this.Height / 2 - pHeight / 2;
 
             //ball start point
@@ -156,7 +152,6 @@ namespace Pong
             ball.Y = 195;
 
             BALL_SPEED = 4;
-
         }
 
         /// <summary>
@@ -177,7 +172,6 @@ namespace Pong
                 ball.X -= BALL_SPEED;
             }
 
-
             // Move paddles using Keyup and Keydown events
 
             if (ballMoveDown == true)
@@ -189,7 +183,6 @@ namespace Pong
                 ball.Y -= BALL_SPEED;
             }
 
-
             #endregion
 
             #region update paddle positions
@@ -197,22 +190,20 @@ namespace Pong
             //move paddle when keys are pressed
             if (aKeyDown == true && p1.Y > 0)
             {
-                p1.Y = p1.Y - PADDLE_SPEED;
+                p1.Y -= PADDLE_SPEED;
             }
-            else if (zKeyDown == true && p1.Y < this.Height - pHeight)
+            if (zKeyDown == true && p1.Y < this.Height - pHeight)
             {
-                p1.Y = p1.Y + PADDLE_SPEED;
+                p1.Y += PADDLE_SPEED;
             }
-            else if (kKeyDown == true && p2.Y > 0)
+            if (kKeyDown == true && p2.Y > 0)
             {
-                p2.Y = p2.Y - PADDLE_SPEED;
+                p2.Y -= PADDLE_SPEED;
             }
-            else if (mKeyDown == true && p2.Y < this.Height - pHeight)
+            if (mKeyDown == true && p2.Y < this.Height - pHeight)
             {
-                p2.Y = p2.Y + PADDLE_SPEED;
+                p2.Y += PADDLE_SPEED;
             }
-
-
 
             #endregion
 
@@ -227,11 +218,9 @@ namespace Pong
                 ballMoveDown = false;
             }
 
-
             #endregion
 
             #region ball collision with paddles
-
 
             //check for paddle collision with ball
             if (p1.IntersectsWith(ball) || p2.IntersectsWith(ball))
@@ -247,7 +236,6 @@ namespace Pong
                 BallSpeedCount = 0;
                 BALL_SPEED++;
             }
-
 
             /*  ENRICHMENT
              *  Instead of using two if statments as noted above see if you can create one
@@ -288,7 +276,6 @@ namespace Pong
                 }
             }
 
-
             #endregion
 
             //refresh the screen, which causes the Form1_Paint method to run
@@ -304,28 +291,26 @@ namespace Pong
         {
             //show winner, and ask to play again
             startLabel.Visible = true;
-            startLabel.Text = $" {winner} has won!";
+            startLabel.Text = $"  {winner} has won!";
             gameUpdateLoop.Stop();
             Refresh();
             Thread.Sleep(2000);
-            startLabel.Text += "  \n Play again? (y / n)";
+            startLabel.Text += "  \n Play again? (Y / N)";
             newGameOk = true;
-
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            //draw paddles and ball and score while game is running
+            if (gameUpdateLoop.Enabled == true)
+            {
+                e.Graphics.FillRectangle(drawBrush, p1);
+                e.Graphics.FillRectangle(drawBrush, p2);
+                e.Graphics.FillRectangle(drawBrush, ball);
 
-            //draw paddles and ball
-            e.Graphics.FillRectangle(drawBrush, p1);
-            e.Graphics.FillRectangle(drawBrush, p2);
-            e.Graphics.FillRectangle(drawBrush, ball);
-
-
-            // TODO draw scores to the screen using DrawString
-            e.Graphics.DrawString(player1Score.ToString(), drawFont, drawBrush, 100, 30);
-            e.Graphics.DrawString(player2Score.ToString(), drawFont, drawBrush, 475, 30);
-
+                e.Graphics.DrawString(player1Score.ToString(), drawFont, drawBrush, 100, 30);
+                e.Graphics.DrawString(player2Score.ToString(), drawFont, drawBrush, 475, 30);
+            }
         }
     }
 }
