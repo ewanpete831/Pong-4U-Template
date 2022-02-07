@@ -209,15 +209,11 @@ namespace Pong
 
             #region ball collision with top and bottom lines
 
-            if (ball.Y < 0) // if ball hits top line
+            if (ball.Y < 0 || ball.Y > this.Height - ball.Height) // if ball hits top or bottom line
             {
-                ballMoveDown = true;
+                ballMoveDown =! ballMoveDown;
             }
-            else if (ball.Y > this.Height - ball.Height) //ball hits bottom line
-            {
-                ballMoveDown = false;
-            }
-
+           
             #endregion
 
             #region ball collision with paddles
